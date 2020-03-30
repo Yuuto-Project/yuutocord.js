@@ -12,6 +12,7 @@ deploy/
 # Miscellaneous
 .tmp/
 .vscode/
+.idea/
 docs/
 
 # NPM ignore
