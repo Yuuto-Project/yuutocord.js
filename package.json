@@ -1,5 +1,5 @@
 {
-  "name": "discord.js",
+  "name": "@yuuto-project/discord.js",
   "version": "12.1.1-yuuto-1",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
