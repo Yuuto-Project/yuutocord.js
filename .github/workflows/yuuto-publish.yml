@@ -1,7 +1,8 @@
 name: Publish
 
 on:
-  branch: [disable-yuuto-custom]
+  push:
+    branch: [disable-yuuto-custom]
 
 jobs:
   docs:
