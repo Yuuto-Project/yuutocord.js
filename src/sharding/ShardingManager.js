@@ -1,8 +1,8 @@
 'use strict';
 
-const EventEmitter = require('events');
 const fs = require('fs');
 const path = require('path');
+const EventEmitter = require('eventemitter2').EventEmitter2;
 const Shard = require('./Shard');
 const { Error, TypeError, RangeError } = require('../errors');
 const Collection = require('../util/Collection');
