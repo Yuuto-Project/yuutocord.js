@@ -1,6 +1,6 @@
 'use strict';
 
-const EventEmitter = require('eventemitter2').EventEmitter2;
+const EventEmitter = require('eventemitter3');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
 const { Error: DJSError } = require('../../errors');

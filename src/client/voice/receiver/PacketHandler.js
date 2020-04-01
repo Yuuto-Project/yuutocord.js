@@ -1,6 +1,6 @@
 'use strict';
 
-const EventEmitter = require('eventemitter2').EventEmitter2;
+const EventEmitter = require('eventemitter3');
 const secretbox = require('../util/Secretbox');
 
 // The delay between packets when a user is considered to have stopped speaking

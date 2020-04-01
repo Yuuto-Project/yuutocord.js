@@ -1,6 +1,6 @@
 {
   "name": "@yuuto-project/discord.js",
-  "version": "12.1.1-yuuto-4",
+  "version": "12.1.1-yuuto-5",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
   "types": "./typings/index.d.ts",
@@ -42,7 +42,7 @@
   "dependencies": {
     "@discordjs/collection": "^0.1.5",
     "abort-controller": "^3.0.0",
-    "eventemitter2": "^6.3.1",
+    "eventemitter3": "^4.0.0",
     "form-data": "^3.0.0",
     "node-fetch": "^2.6.0",
     "prism-media": "^1.2.0",

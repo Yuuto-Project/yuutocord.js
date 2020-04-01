@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const EventEmitter = require('eventemitter2').EventEmitter2;
+const EventEmitter = require('eventemitter3');
 const { Error } = require('../errors');
 const Util = require('../util/Util');
 let childProcess = null;

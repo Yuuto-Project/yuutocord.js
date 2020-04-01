@@ -1,6 +1,6 @@
 'use strict';
 
-const EventEmitter = require('eventemitter2').EventEmitter2;
+const EventEmitter = require('eventemitter3');
 const WebSocket = require('../../WebSocket');
 const { browser, Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
 
