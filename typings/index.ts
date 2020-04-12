@@ -1,6 +1,6 @@
 /// <reference path="index.d.ts" />
 
-import { Client } from 'discord.js';
+import { Client } from '@yuuto-project/discord.js';
 
 const client: Client = new Client();
 
