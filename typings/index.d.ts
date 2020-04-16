@@ -193,6 +193,8 @@ declare module '@yuuto-project/discord.js' {
     public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
 
     public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+
+    public emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
   }
 
   export class ClientApplication extends Base {
@@ -209,7 +211,7 @@ declare module '@yuuto-project/discord.js' {
     public owner: User | Team | null;
     public rpcOrigins: string[];
     public coverImage(options?: ImageURLOptions): string;
-    public fetchAssets(): Promise<ClientApplicationAsset>;
+    public fetchAssets(): Promise<ClientApplicationAsset[]>;
     public iconURL(options?: ImageURLOptions): string;
     public toJSON(): object;
     public toString(): string;
@@ -269,7 +271,7 @@ declare module '@yuuto-project/discord.js' {
     public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
   }
 
-  type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'gif';
+  type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
 
   export const Constants: {
     Package: {
@@ -822,7 +824,7 @@ declare module '@yuuto-project/discord.js' {
     public description?: string;
     public discoverySplash: string | null;
     public emojis: Collection<Snowflake, GuildPreviewEmoji>;
-    public features: GuildFeatures;
+    public features: GuildFeatures[];
     public icon: string | null;
     public id: string;
     public name: string;
@@ -861,7 +863,7 @@ declare module '@yuuto-project/discord.js' {
     public role: Role;
     public syncedAt: number;
     public syncing: boolean;
-    public type: number;
+    public type: string;
     public user: User;
     public delete(reason?: string): Promise<Integration>;
     public edit(data: IntegrationEditData, reason?: string): Promise<Integration>;
@@ -1366,20 +1368,20 @@ declare module '@yuuto-project/discord.js' {
 
   class StreamDispatcher extends VolumeMixin(Writable) {
     constructor(player: object, options?: StreamOptions, streams?: object);
-    public player: object;
-    public pausedSince: number;
+    public readonly bitrateEditable: boolean;
     public broadcast: VoiceBroadcast | null;
     public readonly paused: boolean;
-    public readonly pausedTime: boolean | null;
+    public pausedSince: number | null;
+    public readonly pausedTime: number;
+    public player: object;
     public readonly streamTime: number;
     public readonly totalStreamTime: number;
-    public readonly bitrateEditable: boolean;
 
-    public setBitrate(value: number | 'auto'): boolean;
-    public setPLP(value: number): boolean;
-    public setFEC(enabled: boolean): boolean;
     public pause(silence?: boolean): void;
     public resume(): void;
+    public setBitrate(value: number | 'auto'): boolean;
+    public setFEC(enabled: boolean): boolean;
+    public setPLP(value: number): boolean;
 
     public on(event: 'close' | 'drain' | 'finish' | 'start', listener: () => void): this;
     public on(event: 'debug', listener: (info: string) => void): this;
@@ -1469,6 +1471,7 @@ declare module '@yuuto-project/discord.js' {
     public discriminator: string;
     public readonly defaultAvatarURL: string;
     public readonly dmChannel: DMChannel;
+    public flags: Readonly<UserFlags>;
     public id: Snowflake;
     public lastMessageID: Snowflake | null;
     public locale: string;
@@ -1487,6 +1490,11 @@ declare module '@yuuto-project/discord.js' {
     public typingDurationIn(channel: ChannelResolvable): number;
     public typingIn(channel: ChannelResolvable): boolean;
     public typingSinceIn(channel: ChannelResolvable): Date;
+  }
+
+  export class UserFlags extends BitField<UserFlagsString> {
+    public static FLAGS: Record<UserFlagsString, number>;
+    public static resolve(bit?: BitFieldResolvable<UserFlagsString>): number;
   }
 
   export class Util {
@@ -1819,7 +1827,6 @@ declare module '@yuuto-project/discord.js' {
     public cacheType: Collection<K, Holds>;
     public readonly client: Client;
     public add(data: any, cache?: boolean, { id, extras }?: { id: K; extras: any[] }): Holds;
-    public remove(key: K): void;
     public resolve(resolvable: R): Holds | null;
     public resolveID(resolvable: R): K | null;
   }
@@ -1936,7 +1943,7 @@ declare module '@yuuto-project/discord.js' {
 
   export class RoleManager extends BaseManager<Snowflake, Role, RoleResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
-    public readonly everyone: Role | null;
+    public readonly everyone: Role;
     public readonly highest: Role;
     public guild: Guild;
 
@@ -2374,6 +2381,7 @@ declare module '@yuuto-project/discord.js' {
     query?: string;
     limit?: number;
     withPresences?: boolean;
+    time?: number;
   }
 
   interface FileOptions {
@@ -2543,12 +2551,10 @@ declare module '@yuuto-project/discord.js' {
     invite?: string;
   }
 
-  type ImageExt = 'webp' | 'png' | 'jpg' | 'gif';
-
-  type ImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
+  type ImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 
   interface ImageURLOptions {
-    format?: ImageExt;
+    format?: AllowedImageFormat;
     size?: ImageSize;
   }
 
@@ -2613,6 +2619,7 @@ declare module '@yuuto-project/discord.js' {
     embed?: MessageEmbedOptions | null;
     code?: string | boolean;
     flags?: BitFieldResolvable<MessageFlagsString>;
+    allowedMentions?: MessageMentionOptions;
   }
 
   interface MessageEmbedAuthor {
@@ -2979,6 +2986,21 @@ declare module '@yuuto-project/discord.js' {
     elapsedTime: number;
     timeout: NodeJS.Timeout;
   }
+
+  type UserFlagsString =
+    | 'DISCORD_EMPLOYEE'
+    | 'DISCORD_PARTNER'
+    | 'HYPESQUAD_EVENTS'
+    | 'BUGHUNTER_LEVEL_1'
+    | 'HOUSE_BRAVERY'
+    | 'HOUSE_BRILLIANCE'
+    | 'HOUSE_BALANCE'
+    | 'EARLY_SUPPORTER'
+    | 'TEAM_USER'
+    | 'SYSTEM'
+    | 'BUGHUNTER_LEVEL_2'
+    | 'VERIFIED_BOT'
+    | 'VERIFIED_DEVELOPER';
 
   type UserResolvable = User | Snowflake | Message | GuildMember;
 
